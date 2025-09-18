@@ -3,7 +3,7 @@
 ![Java](https://img.shields.io/badge/Java-17-blue)
 ![Maven](https://img.shields.io/badge/Maven-3.8+-brightgreen)
 ![Spring](https://img.shields.io/badge/Spring-3.2-orange)
-![PrimeFaces](https://img.shields.io/badge/PrimeFaces-11.0-purple)
+![PrimeFaces](https://img.shields.io/badge/PrimeFaces-5.1.0-purple)
 
 Frontend da loja Samsung Fakestore, desenvolvido com **Spring Boot + PrimeFaces**.
 
