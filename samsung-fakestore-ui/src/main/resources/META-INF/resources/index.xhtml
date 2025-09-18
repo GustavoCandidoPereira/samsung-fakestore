@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Samsung FakeStore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .produto-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .produto-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .produto-titulo {
+            font-weight: bold;
+        }
+        .produto-categoria {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</h:head>
+
+<h:body>
+<h:form id="form">
+
+    <!-- FILTROS -->
+    <p:panel header="Filtros de Pesquisa" style="margin:1rem">
+        <p:panelGrid columns="2" styleClass="ui-fluid" cellpadding="5">
+            <h:outputLabel for="cliente" value="Cliente"/>
+            <p:selectOneMenu id="cliente" value="#{orderBean.clienteSelecionado}">
+                <f:selectItem itemLabel="-- Selecione --" itemValue="#{null}"/>
+                <f:selectItems value="#{orderBean.clientes}" var="c"
+                               itemLabel="#{orderBean.formatarNomeClienteSelect(c.nome)}"
+                               itemValue="#{c.id}"/>
+            </p:selectOneMenu>
+
+            <h:outputLabel for="numero" value="Número do Pedido"/>
+            <p:inputText id="numero" value="#{orderBean.numeroPedido}" placeholder="ex: 3"/>
+
+            <h:outputLabel value="Data (de - até)"/>
+            <h:panelGroup>
+                <p:datePicker value="#{orderBean.dataInicio}" pattern="yyyy-MM-dd" placeholder="De"/>
+                <p:datePicker value="#{orderBean.dataFim}" pattern="yyyy-MM-dd" placeholder="Até"/>
+            </h:panelGroup>
+        </p:panelGrid>
+
+        <p:commandButton value="Buscar" action="#{orderBean.buscarPedidos}" update="form"/>
+        <p:commandButton value="Resetar" action="#{orderBean.resetarFiltros}" update="form"/>
+    </p:panel>
+
+    <p:messages id="msgs" autoUpdate="true"/>
+
+    <!-- PEDIDOS -->
+    <p:panel header="Pedidos" rendered="#{orderBean.pesquisaRealizada}">
+        <ui:repeat value="#{orderBean.pedidos}" var="pedido">
+            <p:panel style="margin:1rem;padding:1rem;box-shadow:0 0 5px #ccc;border-radius:8px;">
+                
+                <!-- Nome do cliente -->
+                <h:outputText value="#{orderBean.formatarNomeCliente(pedido.cliente)}"
+                              style="font-weight:bold;font-size:1.1em"/>
+
+                <!-- Linha com Pedido, Data e Total usando Flex -->
+                <h:panelGroup style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:5px;">
+                    
+                    <!-- Pedido + Data à esquerda -->
+                    <h:panelGroup>
+                        <h:outputText value="#{orderBean.formatarPedidoId(pedido.pedidoId)}"/>
+                        <h:outputText value=" ("/>
+                        <h:outputText value="#{pedido.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        <h:outputText value=")"/>
+                    </h:panelGroup>
+
+                    <!-- Total à direita -->
+                    <h:panelGroup>
+                        <h:outputText value="#{pedido.total}" style="font-weight:bold;">
+                            <f:convertNumber type="currency"/>
+                        </h:outputText>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
+                <!-- Produtos -->
+                <p:dataTable var="produto" value="#{pedido.itens}" styleClass="ui-fluid" responsiveLayout="scroll">
+                    <p:column headerText="Produto">
+                        <h:panelGroup styleClass="produto-container">
+                            <h:graphicImage value="#{produto.imagem}" width="80"/>
+                            <h:panelGroup styleClass="produto-info">
+                                <h:outputText value="#{produto.titulo}" styleClass="produto-titulo"/>
+                                <h:outputText value="#{produto.categoria}" styleClass="produto-categoria"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </p:column>
+
+                    <p:column headerText="Preço">
+                        <h:outputText value="#{produto.preco}">
+                            <f:convertNumber type="currency"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Quantidade">
+                        <h:outputText value="#{produto.quantidade}"/>
+                    </p:column>
+
+                    <p:column headerText="Subtotal">
+                        <h:outputText value="#{produto.preco * produto.quantidade}">
+                            <f:convertNumber type="currency"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+
+            </p:panel>
+        </ui:repeat>
+
+        <p:outputPanel rendered="#{empty orderBean.pedidos}">
+            <h:outputText value="Nenhum pedido encontrado." style="color:red"/>
+        </p:outputPanel>
+    </p:panel>
+
+</h:form>
+</h:body>
+</html>

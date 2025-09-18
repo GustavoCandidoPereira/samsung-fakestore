@@ -1,0 +1,20 @@
+server:
+  port: 8081   # Porta do backend
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: samsung-fakestore-api
+  mvc:
+    locale: pt_BR
+    locale-resolver: fixed
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.samsung.fakestore: DEBUG

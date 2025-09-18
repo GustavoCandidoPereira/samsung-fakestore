@@ -1,0 +1,6 @@
+server:
+  port: 8082 # Porta do frontend
+
+# backend url default 
+fakestore:
+  backend-url: http://localhost:8081/api
